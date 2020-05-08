@@ -68,7 +68,7 @@ def design_ngs_primers(target_file, genome_file, design_set, primer3_location, p
 	# go through targets
 	for line in target_file:
 		line = line.rstrip('\r\n')
-		name,target,position = line.split('\t')
+		name,target,scores,hits,position = line.split('\t')
 		chrom,start_end,strand = position.split(':')
 		start,end = start_end.split('-')
 		if chrom not in chr_list:
