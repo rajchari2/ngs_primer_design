@@ -51,7 +51,6 @@ def design_ngs_primers(target_file, genome_file, design_set, primer3_location, p
 
 	# increment ivt number
 	ivt_number = int(ivt_num) + 1
-	print(ivt_number)
 
 	# find longest set of guides by position
 	guide_dict = defaultdict(dict)
@@ -59,9 +58,6 @@ def design_ngs_primers(target_file, genome_file, design_set, primer3_location, p
 	name_to_target = defaultdict(str)
 	guide_list = []
 	ivt_to_name = defaultdict(str)
-
-	# guide clusters
-	guide_cluster = defaultdict(list)
 
 	print('Going through target file')
 
@@ -83,7 +79,6 @@ def design_ngs_primers(target_file, genome_file, design_set, primer3_location, p
 	# store relevant chrs
 	chr_list_copy = chr_list
 	for record in SeqIO.parse(genome_file,'fasta'):
-		print('Chr: ' + str(record.id))
 		if str(record.id) in chr_list:
 			chr_db[str(record.id)] = record.seq
 			chr_list_copy.remove(str(record.id))
@@ -94,6 +89,8 @@ def design_ngs_primers(target_file, genome_file, design_set, primer3_location, p
 
 	# identify longest window of guides within 130 bp
 	for chrom in guide_dict:
+		# guide clusters
+		guide_cluster = defaultdict(list)
 		positions = sorted(guide_dict[chrom].keys())
 		index1 = 0
 		index2 = 0
@@ -166,11 +163,12 @@ def design_ngs_primers(target_file, genome_file, design_set, primer3_location, p
 			
 			# go through and populate PSID
 			for guide in guide_cluster[gc]:
-				entry = guide_dict[chrom][guide]
-				parts = entry.split('\t')
-				guide_to_psid[parts[0]] = psid_name
-				ivt_to_name[ivt_number] = parts[0]
-				ivt_number += 1
+				if guide in guide_dict[chrom]:
+					entry = guide_dict[chrom][guide]
+					parts = entry.split('\t')
+					guide_to_psid[parts[0]] = psid_name
+					ivt_to_name[ivt_number] = parts[0]
+					ivt_number += 1
 
 
 	# close primer3_input
@@ -274,7 +272,6 @@ def design_ngs_primers(target_file, genome_file, design_set, primer3_location, p
 			amplicon_db[ps_name] = 'TBD'
 	# make output files, first write oligo 
 	for ivtnum in sorted(ivt_to_name.keys()):
-		print('IVT: ' + str(ivtnum))
 		# name
 		guide_name = ivt_to_name[ivtnum]
 		psname = guide_to_psid[guide_name]
