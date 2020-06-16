@@ -220,8 +220,10 @@ def design_ngs_primers(target_file, genome_file, design_set, primer3_location, p
 	# tab file and oligo file
 	oligo_file = design_set + '_oligo_order.tab'
 	analysis_file = design_set + '_analysis_file.tab'
+	ivt_info_file = design_set + '_ivt_info.tab'
 	oligo_output = open(oligo_file,'w')
 	analysis_output = open(analysis_file,'w')
+	ivt_output = open(ivt_info_file,'w')
 
 	# adapter sequences
 	left_ivt = 'GGATCCTAATACGACTCACTATAG '
@@ -287,9 +289,13 @@ def design_ngs_primers(target_file, genome_file, design_set, primer3_location, p
 		analysis_output.write('IVT-' + str(ivtnum) + '-R1\t' + genome_file.name + '\t' + amplicon_db[psname] + '\t' + target + '\t' + cell_type + '-' + psname + '-Control\n')
 		analysis_output.write('IVT-' + str(ivtnum) + '-R2\t' + genome_file.name + '\t' + amplicon_db[psname] + '\t' + target + '\t' + cell_type + '-' + psname + '-Control\n')
 
+		# write to ivt output
+		ivt_output.write(str(ivtnum) + '\t' + psname + '-NGS-F' + '\t' + psname + '-NGS-R\n')
+
 	# close file handles
 	oligo_output.close()
 	analysis_output.close()
+	ivt_output.close()
 
 
 def make_long_psid(primer_pair_count):
